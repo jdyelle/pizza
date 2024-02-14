@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AspirationalPizza.Library\AspirationalPizza.Library.csproj" />
     <ProjectReference Include="..\AspirationalPizza.ServiceDefaults\AspirationalPizza.ServiceDefaults.csproj" />
   </ItemGroup>
 

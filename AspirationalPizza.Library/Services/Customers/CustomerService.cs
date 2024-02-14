@@ -8,20 +8,31 @@ using Microsoft.Extensions.Options;
 using AspirationalPizza.Library.Configuration;
 using AspirationalPizza.Library.Services.Customers.Repositories;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace AspirationalPizza.Library.Services.Customers
 {
-    public class CustomerService
+    public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly ILogger<CustomerService> _logger;
         private readonly IOptions<ServiceConfig<CustomerService>> _options;
+        private readonly Mapper _mapper;
 
         public CustomerService(ILogger<CustomerService> logger, ICustomerRepository customerRepository, IOptions<ServiceConfig<CustomerService>> options)
         {
             _customerRepository = customerRepository;
             _logger = logger;
             _options = options;
+
+            MapperConfiguration config = new MapperConfiguration(config =>
+            {
+                config.CreateMap<CustomerDto, CustomerModel>();
+                config.CreateMap<CustomerModel, CustomerDto>();
+                config.CreateMap<CustomerAddressDto, CustomerAddress>();
+                config.CreateMap<CustomerAddress, CustomerAddressDto>();
+            });
+            _mapper = new Mapper(config);
         }
 
         public async Task<int> CreateOrUpdate(CustomerModel customer)
@@ -30,7 +41,6 @@ namespace AspirationalPizza.Library.Services.Customers
             CustomerModel? _customer = await _customerRepository.Get(customer.Id);
 
             return await _customerRepository.Create(customer);
-
         }
 
         public async Task<CustomerModel?> GetById(string id)
@@ -47,6 +57,9 @@ namespace AspirationalPizza.Library.Services.Customers
         {
             return await _customerRepository.Search(searchObject);
         }
+
+        public CustomerModel DtoToModel(CustomerDto dto) { return _mapper.Map<CustomerDto, CustomerModel>(dto); }
+        public CustomerDto ModelToDto(CustomerModel model) { return _mapper.Map<CustomerModel, CustomerDto>(model); }
 
         //If the service needs two repositories we could add specific repository factories
         public static ICustomerRepository GetRepository(ILogger<ICustomerRepository> logger, ServiceConfig<CustomerService> config)
