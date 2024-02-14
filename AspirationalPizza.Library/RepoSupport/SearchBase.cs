@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AspirationalPizza.Library.RepoSearch
+namespace AspirationalPizza.Library.RepoSupport
 {
     public abstract class SearchBase
     {

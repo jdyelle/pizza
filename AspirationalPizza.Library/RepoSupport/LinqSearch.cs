@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 
-namespace AspirationalPizza.Library.RepoSearch
+namespace AspirationalPizza.Library.RepoSupport
 {
     // This is a lambda expression builder that *should* be able to Linq search repositories based on passed criteria objects.
     // TODO: Linq nested object parsing/searching isn't working correctly because of the way we invoke properties - that's going to be a research project.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AspirationalPizza.Library.RepoSearch;
+using AspirationalPizza.Library.RepoSupport;
 
 namespace AspirationalPizza.Library.Services.Customers.Repositories
 {
@@ -28,8 +28,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
                         { "Addresses.Street", "String" },
                         { "Addresses.City", "String" },
                         { "Addresses.State", "DateTime" },
-                        { "Addresses.ZipCode", "Number" },
-                        { "PizzaTemplateIds", "String[]" }
+                        { "Addresses.ZipCode", "Number" }
                     };
             }
         }

@@ -15,8 +15,8 @@ namespace AspirationalPizza.Library.Services.Customers
         public String? LastName { get; set; } = null;
         public List<String> Emails { get; set; } = new List<String>();
         public List<String> PhoneNumbers { get; set; } = new List<String>();
-        public List<CustomerAddress> CustomerAddresses { get; set; } = new List<CustomerAddress> { };
-        public List<String> PIzzaTemplateIds { get; set; } = new List<String>();
+        public List<CustomerAddress> CustomerAddresses { get; set; } = new List<CustomerAddress>();
+        public List<String> FavoriteFoodItems { get; set; } = new List<String>();
 
     }
 
