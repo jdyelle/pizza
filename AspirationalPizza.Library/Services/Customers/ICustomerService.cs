@@ -10,8 +10,9 @@ namespace AspirationalPizza.Library.Services.Customers
     public interface ICustomerService
     {
         Task<CustomerModel?> GetById(String id);
-        Task<int> CreateOrUpdate(CustomerModel person);
-        Task<int> Delete(CustomerModel newPerson);
+        Task<CustomerModel> CreateOrUpdate(CustomerModel customer);
+        Task<List<CustomerModel>> BulkInsert(List<CustomerModel> customerList);
+        Task<Boolean> Delete(CustomerModel newPerson);
         Task<List<CustomerModel>> Search(CustomerSearch criteria);
 
         CustomerModel DtoToModel(CustomerDto dto);

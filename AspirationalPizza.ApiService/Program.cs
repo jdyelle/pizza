@@ -21,10 +21,10 @@ if (app.Environment.IsDevelopment())
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
 
-AspirationalPizza.ApiService.Routes.Add(app);  //Taking the cognitive load out of adding routes in the main program loop.
+AspirationalPizza.ApiService.Endpoints.Add(app);  //Taking the cognitive load out of adding routes in the main program loop.
 
 app.MapDefaultEndpoints();
 
-app.UseSwaggerUI();
+//app.UseSwaggerUI();
 app.Run();
 

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.IO;
 using AspirationalPizza.Library.RepoSupport;
 using AspirationalPizza.Library.Configuration;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspirationalPizza.Library.Services.Customers.Repositories
 {
@@ -27,21 +29,22 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
 
         }
 
-        async Task<int> ICustomerRepository.Create(CustomerModel customer)
+        async Task<CustomerModel> ICustomerRepository.Create(CustomerModel customer)
         {
-            if (customer.CustomerId != null)
+            try
             {
                 await _collection.InsertOneAsync(customer);
-                return 1;
+                return customer;
             }
-            throw new ArgumentNullException(nameof(customer));
+            catch (Exception ex) { throw new InvalidDataException("Unable to update specified customer record ", ex); }
         }
 
-        async Task<int> ICustomerRepository.Delete(CustomerModel customer)
+        async Task<Boolean> ICustomerRepository.Delete(CustomerModel customer)
         {
             FilterDefinition<CustomerModel> filter = Builders<CustomerModel>.Filter.Eq(c => c.CustomerId, customer.CustomerId);
             DeleteResult status = await _collection.DeleteOneAsync(filter);
-            return (int)status.DeletedCount;
+            if (status.DeletedCount < 1) return true;
+            throw new InvalidDataException("Unable to delete specified customer record ");
         }
 
         async Task<CustomerModel?> ICustomerRepository.Get(string customerId)
@@ -58,11 +61,22 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
             return partyList;
         }
 
-        async Task<int> ICustomerRepository.Update(CustomerModel customer)
+        async Task<CustomerModel> ICustomerRepository.Update(CustomerModel customer)
         {
             FilterDefinition<CustomerModel> filter = Builders<CustomerModel>.Filter.Eq(c => c.CustomerId, customer.CustomerId);
             ReplaceOneResult result = await _collection.ReplaceOneAsync(filter, customer);
-            return (int)result.ModifiedCount;
+            if (result.ModifiedCount < 1) return customer;
+            throw new InvalidDataException("Unable to update specified customer record ");
+        }
+
+        async Task<List<CustomerModel>> ICustomerRepository.BulkInsert(List<CustomerModel> customers)
+        {
+            try
+            {
+                await _collection.InsertManyAsync(customers);
+                return customers;
+            }
+            catch (Exception ex) { throw new InvalidDataException("Unable to update specified customer record ", ex); }
         }
     }
 }

@@ -35,12 +35,11 @@ namespace AspirationalPizza.Library.Services.Customers
             _mapper = new Mapper(config);
         }
 
-        public async Task<int> CreateOrUpdate(CustomerModel customer)
+        public async Task<CustomerModel> CreateOrUpdate(CustomerModel customer)
         {
             if (String.IsNullOrEmpty(customer.CustomerId)) customer.CustomerId = Guid.NewGuid().ToString();
-            CustomerModel? _customer = await _customerRepository.Get(customer.CustomerId);
-
-            return await _customerRepository.Create(customer);
+            if (await _customerRepository.Create(customer) != null) return customer;
+            throw new Exception("New record was unable to be created");
         }
 
         public async Task<CustomerModel?> GetById(string id)
@@ -48,7 +47,7 @@ namespace AspirationalPizza.Library.Services.Customers
             return await _customerRepository.Get(id);
         }
 
-        public async Task<int> Delete(CustomerModel customer)
+        public async Task<Boolean> Delete(CustomerModel customer)
         {
             return await _customerRepository.Delete(customer);
         }
@@ -56,6 +55,11 @@ namespace AspirationalPizza.Library.Services.Customers
         public async Task<List<CustomerModel>> Search(CustomerSearch searchObject)
         {
             return await _customerRepository.Search(searchObject);
+        }
+
+        public async Task<List<CustomerModel>> BulkInsert(List<CustomerModel> customerList)
+        {
+            return await _customerRepository.BulkInsert(customerList);
         }
 
         public CustomerModel DtoToModel(CustomerDto dto) { return _mapper.Map<CustomerDto, CustomerModel>(dto); }
