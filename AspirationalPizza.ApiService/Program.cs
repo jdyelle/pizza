@@ -5,9 +5,18 @@ builder.AddServiceDefaults();
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
+builder.Services.AddSwaggerGen();
 AspirationalPizza.Library.Configuration.Services.Configure(builder.Services, builder.Configuration);
 
 var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+}
 
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
@@ -16,5 +25,6 @@ AspirationalPizza.ApiService.Routes.Add(app);  //Taking the cognitive load out o
 
 app.MapDefaultEndpoints();
 
+app.UseSwaggerUI();
 app.Run();
 

@@ -13,9 +13,6 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
         public CustomerDbContext(DbContextOptions<CustomerDbContext> options) : base(options) { }
         public DbSet<CustomerModel> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
-        public DbSet<String> Emails { get; set; }
-        public DbSet<String> PhoneNumbers { get; set; }
-        public DbSet<String> FavoriteFoodItems { get; set; }
 
         //Since EF Core doesn't support primitive collections, we have to convert the lists to comma separated strings
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,6 +32,10 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
                 .HasConversion(
                     v => string.Join(',', v.ToArray()),
                     v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList());
+            modelBuilder.Entity<CustomerAddress>()
+                .Property(a => a.AddressId)
+                .HasDefaultValue(Guid.NewGuid().ToString())
+                .ValueGeneratedOnAdd(); 
         }
     }
 }

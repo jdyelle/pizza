@@ -37,8 +37,8 @@ namespace AspirationalPizza.Library.Services.Customers
 
         public async Task<int> CreateOrUpdate(CustomerModel customer)
         {
-            if (String.IsNullOrEmpty(customer.Id)) customer.Id = Guid.NewGuid().ToString();
-            CustomerModel? _customer = await _customerRepository.Get(customer.Id);
+            if (String.IsNullOrEmpty(customer.CustomerId)) customer.CustomerId = Guid.NewGuid().ToString();
+            CustomerModel? _customer = await _customerRepository.Get(customer.CustomerId);
 
             return await _customerRepository.Create(customer);
         }

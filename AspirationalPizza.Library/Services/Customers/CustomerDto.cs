@@ -10,7 +10,7 @@ namespace AspirationalPizza.Library.Services.Customers
 {
     public record CustomerDto
     {
-        public String? Id { get; set; }
+        public String? CustomerId { get; set; }
         public String? FirstName { get; set; } = null;
         public String? LastName { get; set; } = null;
         public List<String> Emails { get; set; } = new List<String>();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,8 @@ namespace AspirationalPizza.Library.Services.Customers
 {
     public record CustomerModel
     {
-        public String? Id { get; set; }
-        
+        [Key]
+        public String? CustomerId { get; set; }        
         public String? FirstName { get; set; } = null;
         public String? LastName { get; set; } = null;
         public List<String> Emails { get; set; } = new List<String>();
@@ -22,6 +23,8 @@ namespace AspirationalPizza.Library.Services.Customers
 
     public record CustomerAddress
     {
+        [Key]
+        public String? AddressId { get; set; } = null; // This is just for EF to do its thing.
         public String StreetAddress { get; set; } = String.Empty;
         public String City { get; set; } = String.Empty;
         public String State { get; set; } = String.Empty;

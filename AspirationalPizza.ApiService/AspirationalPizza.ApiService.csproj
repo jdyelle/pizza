@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AspirationalPizza.Library\AspirationalPizza.Library.csproj" />
     <ProjectReference Include="..\AspirationalPizza.ServiceDefaults\AspirationalPizza.ServiceDefaults.csproj" />
   </ItemGroup>

@@ -29,7 +29,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
 
         async Task<int> ICustomerRepository.Create(CustomerModel customer)
         {
-            if (customer.Id != null)
+            if (customer.CustomerId != null)
             {
                 await _collection.InsertOneAsync(customer);
                 return 1;
@@ -39,14 +39,14 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
 
         async Task<int> ICustomerRepository.Delete(CustomerModel customer)
         {
-            FilterDefinition<CustomerModel> filter = Builders<CustomerModel>.Filter.Eq(p => p.Id, customer.Id);
+            FilterDefinition<CustomerModel> filter = Builders<CustomerModel>.Filter.Eq(c => c.CustomerId, customer.CustomerId);
             DeleteResult status = await _collection.DeleteOneAsync(filter);
             return (int)status.DeletedCount;
         }
 
         async Task<CustomerModel?> ICustomerRepository.Get(string customerId)
         {
-            FilterDefinition<CustomerModel> filter = Builders<CustomerModel>.Filter.Eq(p => p.Id, customerId);
+            FilterDefinition<CustomerModel> filter = Builders<CustomerModel>.Filter.Eq(c => c.CustomerId, customerId);
             CustomerModel customer = await _collection.Find(filter).FirstOrDefaultAsync();
             return customer;
         }
@@ -60,7 +60,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
 
         async Task<int> ICustomerRepository.Update(CustomerModel customer)
         {
-            FilterDefinition<CustomerModel> filter = Builders<CustomerModel>.Filter.Eq(p => p.Id, customer.Id);
+            FilterDefinition<CustomerModel> filter = Builders<CustomerModel>.Filter.Eq(c => c.CustomerId, customer.CustomerId);
             ReplaceOneResult result = await _collection.ReplaceOneAsync(filter, customer);
             return (int)result.ModifiedCount;
         }
