@@ -12,7 +12,7 @@ namespace AspirationalPizza.Library.RepoSupport
         internal static FilterDefinition<T> FilterBuilder(SearchBase searchObject)
         {
             List<SearchCriteria> CriteriaList = searchObject.GetFilters();
-            Dictionary<String, String> Attributes = searchObject.Attributes;
+            Dictionary<String, String> Attributes = searchObject.AttributeMeta;
             FilterDefinitionBuilder<T> builder = Builders<T>.Filter;
             FilterDefinition<T> filter = builder.Empty;
             foreach (SearchCriteria _rule in CriteriaList)
@@ -21,7 +21,7 @@ namespace AspirationalPizza.Library.RepoSupport
                 {
                     FilterDefinition<T> filterDefinition = _rule switch
                     {
-                        { Comparison: "Equals" } => builder.Eq(_rule.Attribute, _rule.Value),
+                        { Comparison: "Equal" } => builder.Eq(_rule.Attribute, _rule.Value),
                         { Comparison: "Contains" } => builder.StringIn(_rule.Attribute, _rule.Value),
                         { Comparison: "AnyOf" } => builder.AnyIn(_rule.Attribute, _rule.Value),
                         { Comparison: "NotIn" } => builder.Nin(_rule.Attribute, _rule.Value),
@@ -34,7 +34,7 @@ namespace AspirationalPizza.Library.RepoSupport
                 {
                     FilterDefinition<T> filterDefinition = _rule switch
                     {
-                        { Comparison: "Equals" } => builder.Eq(_rule.Attribute, _rule.Value),
+                        { Comparison: "Equal" } => builder.Eq(_rule.Attribute, _rule.Value),
                         { Comparison: "GreaterThan" } => builder.Gt(_rule.Attribute, _rule.Value),
                         { Comparison: "GreaterThanOrEquals" } => builder.Gte(_rule.Attribute, _rule.Value),
                         { Comparison: "LessThan" } => builder.Lt(_rule.Attribute, _rule.Value),

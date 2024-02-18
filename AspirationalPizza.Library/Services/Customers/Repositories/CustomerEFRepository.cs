@@ -90,5 +90,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
 
             return returnList;
         }
+
+        public void Dispose() { _customerContext.Dispose(); }
     }
 }

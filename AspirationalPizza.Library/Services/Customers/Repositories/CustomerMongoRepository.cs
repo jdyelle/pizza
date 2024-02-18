@@ -76,7 +76,9 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
                 await _collection.InsertManyAsync(customers);
                 return customers;
             }
-            catch (Exception ex) { throw new InvalidDataException("Unable to update specified customer record ", ex); }
+            catch (Exception ex) { throw new InvalidDataException("Unable to create specified customer records ", ex); }
         }
+
+        public void Dispose() { }  //Mongo Client handles dispose automatically.
     }
 }

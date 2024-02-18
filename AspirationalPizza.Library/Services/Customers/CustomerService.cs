@@ -62,6 +62,8 @@ namespace AspirationalPizza.Library.Services.Customers
             return await _customerRepository.BulkInsert(customerList);
         }
 
+        public void Dispose() { _customerRepository.Dispose(); }
+
         public CustomerModel DtoToModel(CustomerDto dto) { return _mapper.Map<CustomerDto, CustomerModel>(dto); }
         public CustomerDto ModelToDto(CustomerModel model) { return _mapper.Map<CustomerModel, CustomerDto>(model); }
 

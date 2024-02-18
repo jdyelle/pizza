@@ -7,7 +7,7 @@ using AspirationalPizza.Library.Services.Customers.Repositories;
 
 namespace AspirationalPizza.Library.Services.Customers
 {
-    public interface ICustomerService
+    public interface ICustomerService : IDisposable
     {
         Task<CustomerModel?> GetById(String id);
         Task<CustomerModel> CreateOrUpdate(CustomerModel customer);

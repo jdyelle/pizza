@@ -15,11 +15,24 @@ namespace AspirationalPizza.Library.RepoSupport
         //attribute here should probably be an enum that's overridden by type or something.
         public void AddFilter(string attribute, string criteria, string value)
         {
-            FilterRules.Add(new SearchCriteria(Attributes) { Attribute = attribute, Comparison = criteria, Value = value });
+            FilterRules.Add(new SearchCriteria(AttributeMeta) { Attribute = attribute, Comparison = criteria, Value = value });
+        }
+
+        public record Comparisons
+        {
+            public const string Equal = "Equal";
+            public const string GreaterThan = "GreaterThan";
+            public const string GreaterThanOrEquals = "GreaterThanOrEquals";
+            public const string LessThan = "LessThan";
+            public const string LessThanOrEquals = "LessThanOrEquals";
+            public const string Contains = "Contains";
+            public const string AnyOf = "AnyOf";
+            public const string NotIn = "NotIn";
         }
 
         public List<SearchCriteria> GetFilters() { return FilterRules; }
 
-        public abstract Dictionary<string, string> Attributes { get; }
+        public abstract Dictionary<string, string> AttributeMeta { get; }
+        public abstract record Attributes;
     }
 }

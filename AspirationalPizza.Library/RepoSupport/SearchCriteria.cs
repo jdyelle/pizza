@@ -46,7 +46,7 @@ namespace AspirationalPizza.Library.RepoSupport
         /// <summary>"A" / ["X","Y","Z"] </summary>
         public string Value { get; set; } = String.Empty;
 
-
+        // Technically this shouldn't be necessary if they're using SearchBase.Comparisons, but a string may have been passed.
         private readonly List<String> _criteriaValues = new List<String>
         {
             "Equals",

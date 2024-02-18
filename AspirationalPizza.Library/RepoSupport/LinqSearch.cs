@@ -15,7 +15,7 @@ namespace AspirationalPizza.Library.RepoSupport
         internal static Func<T, bool> FilterBuilder(SearchBase searchObject)
         {
             List<SearchCriteria> CriteriaList = searchObject.GetFilters();
-            Dictionary<String, String> Attributes = searchObject.Attributes;
+            Dictionary<String, String> Attributes = searchObject.AttributeMeta;
             ParameterExpression parameterExpression = Expression.Parameter(typeof(T), "x");
             Expression? filterExpression = null;
 
@@ -30,7 +30,7 @@ namespace AspirationalPizza.Library.RepoSupport
                     ConstantExpression constant = Expression.Constant(criteria.Value);
                     comparison = criteria switch
                     {
-                        { Comparison: "Equals" } => comparison = Expression.Equal(property, constant),
+                        { Comparison: "Equal" } => comparison = Expression.Equal(property, constant),
                         { Comparison: "Contains" } => comparison = Expression.Call(property, "Contains", Type.EmptyTypes, constant),
                         { Comparison: "NotIn" } => comparison = Expression.Not(Expression.Call(property, "Contains", Type.EmptyTypes, constant)),
                         { Comparison: _ } => throw new ArgumentException("Filter combination doesn't make sense")
@@ -53,7 +53,7 @@ namespace AspirationalPizza.Library.RepoSupport
                     ConstantExpression constant = Expression.Constant(double.Parse(criteria.Value));
                     comparison = criteria switch
                     {
-                        { Comparison: "Equals" } => comparison = Expression.Equal(property, constant),
+                        { Comparison: "Equal" } => comparison = Expression.Equal(property, constant),
                         { Comparison: "GreaterThan" } => comparison = Expression.GreaterThan(property, constant),
                         { Comparison: "GreaterThanOrEquals" } => comparison = Expression.GreaterThanOrEqual(property, constant),
                         { Comparison: "LessThan" } => comparison = Expression.LessThan(property, constant),
@@ -67,7 +67,7 @@ namespace AspirationalPizza.Library.RepoSupport
                     ConstantExpression constant = Expression.Constant(DateTime.Parse(criteria.Value));
                     comparison = criteria switch
                     {
-                        { Comparison: "Equals" } => comparison = Expression.Equal(property, constant),
+                        { Comparison: "Equal" } => comparison = Expression.Equal(property, constant),
                         { Comparison: "GreaterThan" } => comparison = Expression.GreaterThan(property, constant),
                         { Comparison: "GreaterThanOrEquals" } => comparison = Expression.GreaterThanOrEqual(property, constant),
                         { Comparison: "LessThan" } => comparison = Expression.LessThan(property, constant),

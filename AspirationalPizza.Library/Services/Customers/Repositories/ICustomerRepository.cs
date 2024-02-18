@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AspirationalPizza.Library.Services.Customers.Repositories
 {
-    public interface ICustomerRepository
+    public interface ICustomerRepository : IDisposable
     {
         internal Task<CustomerModel> Create(CustomerModel Customer);
         internal Task<CustomerModel> Update(CustomerModel Customer);
