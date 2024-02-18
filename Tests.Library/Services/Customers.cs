@@ -124,7 +124,7 @@ namespace Tests.Library.Services
             Assert.AreEqual(inserted.Count(), 3);
 
             CustomerSearch criteria = new CustomerSearch();
-            criteria.AddFilter(CustomerSearch.Attributes.PhoneNumbers, CustomerSearch.Comparisons.Equal, "123-456-7890");
+            criteria.AddFilter(CustomerSearch.Attributes.PhoneNumbers, CustomerSearch.Comparisons.Contains, "123-456-7890");
             List<CustomerModel> searchResult = _customerService.Search(criteria).Result;
 
             Assert.AreEqual(searchResult.Count, 2);

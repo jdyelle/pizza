@@ -49,7 +49,7 @@ namespace AspirationalPizza.Library.RepoSupport
         // Technically this shouldn't be necessary if they're using SearchBase.Comparisons, but a string may have been passed.
         private readonly List<String> _criteriaValues = new List<String>
         {
-            "Equals",
+            "Equal",
             "GreaterThan",
             "GreaterThanOrEquals",
             "LessThan",

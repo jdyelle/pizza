@@ -75,8 +75,10 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
             List<EntityEntry<CustomerModel>> confirmed = new List<EntityEntry<CustomerModel>>();
             List<CustomerModel> returnList = new List<CustomerModel>();
             foreach (CustomerModel _customer in customers)
-                if (_customer.CustomerId != null) 
-                    confirmed.Add(_customerContext.Customers.Add(_customer));
+            {
+                if (String.IsNullOrEmpty(_customer.CustomerId)) _customer.CustomerId = Guid.NewGuid().ToString();
+                confirmed.Add(_customerContext.Customers.Add(_customer));
+            }
 
             int updatedRows = await _customerContext.SaveChangesAsync();
 

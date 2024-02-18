@@ -73,7 +73,9 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
         {
             try
             {
-                await _collection.InsertManyAsync(customers);
+                foreach (CustomerModel _customer in customers) 
+                    if (String.IsNullOrEmpty(_customer.CustomerId)) _customer.CustomerId = Guid.NewGuid().ToString();
+                    await _collection.InsertManyAsync(customers);
                 return customers;
             }
             catch (Exception ex) { throw new InvalidDataException("Unable to create specified customer records ", ex); }
