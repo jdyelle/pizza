@@ -15,16 +15,18 @@ namespace Tests.Library.Services
         [ClassInitialize]
         public static void SetupService(TestContext context)
         {
-            ILogger<ICustomerRepository> repoLogger = new NullLogger<ICustomerRepository>();
+            ILogger<IRepository<CustomerModel>> repoLogger = new NullLogger<IRepository<CustomerModel>>();
             ILogger<CustomerService> serviceLogger = new NullLogger<CustomerService>();
 
-            ServiceConfig<CustomerService> config = new AspirationalPizza.Library.Configuration.ServiceConfig<CustomerService>
+            ServiceConfig<CustomerService> config = new ServiceConfig<CustomerService>()
             {
-                Repository = new AspirationalPizza.Library.Configuration.RepoConfig
-                { RepositoryType = "Memory" }
+                Repositories = new Dictionary<String, RepoConfig>
+                {
+                    { "CustomerModel", new RepoConfig { RepositoryType = "Memory" } }
+                }
             };
 
-            ICustomerRepository repo = CustomerService.GetRepository(repoLogger, config);
+            IRepository<CustomerModel> repo = CustomerService.GetRepository(repoLogger, config);
             _customerService = new CustomerService(serviceLogger, repo, Options.Create(config));
 
         }

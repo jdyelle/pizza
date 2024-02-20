@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using AspirationalPizza.Library.Configuration;
 using AspirationalPizza.Library.Services.Customers.Repositories;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using AspirationalPizza.Library.RepoSupport;
 
 namespace AspirationalPizza.Library.Services.Customers
 {
     public class CustomerService : ICustomerService
     {
-        private readonly ICustomerRepository _customerRepository;
+        private readonly IRepository<CustomerModel> _customerRepository;
         private readonly ILogger<CustomerService> _logger;
         private readonly IOptions<ServiceConfig<CustomerService>> _options;
         private readonly Mapper _mapper;
 
-        public CustomerService(ILogger<CustomerService> logger, ICustomerRepository customerRepository, IOptions<ServiceConfig<CustomerService>> options)
+        public CustomerService(ILogger<CustomerService> logger, IRepository<CustomerModel> customerRepository, IOptions<ServiceConfig<CustomerService>> options)
         {
             _customerRepository = customerRepository;
             _logger = logger;
@@ -62,45 +59,47 @@ namespace AspirationalPizza.Library.Services.Customers
             return await _customerRepository.BulkInsert(customerList);
         }
 
-        public void Dispose() { _customerRepository.Dispose(); }
+        public void Dispose() { }
 
         public CustomerModel DtoToModel(CustomerDto dto) { return _mapper.Map<CustomerDto, CustomerModel>(dto); }
         public CustomerDto ModelToDto(CustomerModel model) { return _mapper.Map<CustomerModel, CustomerDto>(model); }
 
+        
         //If the service needs two repositories we could add specific repository factories
-        public static ICustomerRepository GetRepository(ILogger<ICustomerRepository> logger, ServiceConfig<CustomerService> config)
+        public static IRepository<CustomerModel> GetRepository(ILogger<IRepository<CustomerModel>> logger, ServiceConfig<CustomerService> config)
         {
-            ICustomerRepository? returnValue = null;
+            IRepository<CustomerModel>? returnValue = null;
             DbContextOptionsBuilder<CustomerDbContext> optionsBuilder = new DbContextOptionsBuilder<CustomerDbContext>();
             CustomerDbContext? context = null;
-            String connectionString = String.Empty;
-            if (config!.Repository!.RepositoryType == null) { throw new Exception("Could not find repository config, please configure the service."); }
-            switch (config.Repository.RepositoryType)
+            String connectionString = String.Empty; 
+            Configuration.RepoConfig? repoConfig = config!.Repositories["CustomerModel"];
+            if (repoConfig == null) { throw new Exception("Could not find repository config, please configure the service."); }
+            switch (repoConfig.RepositoryType)
             {
-                case "Mongo":
+                case RepoTypes.Mongo:
                     //Use the mongo repo with its associated connection string information.
-                    returnValue = new CustomerMongoRepository(logger, config.Repository);
+                    returnValue = new CustomerMongoRepository(logger, repoConfig);
                     return returnValue;
-                case "Memory":
+                case RepoTypes.Memory:
                     optionsBuilder.UseInMemoryDatabase("CustomerDB");
                     context = new CustomerDbContext(optionsBuilder.Options);
                     returnValue = new CustomerEFRepository(logger, context);
                     return returnValue;
-                case "SQLite":
+                case RepoTypes.Sqlite:
                     //Add EF context here, and inject the EF context into the repo constructor to make EF happen.  
                     //  this actually provides a convenient wrapper around EF so that it could be switched to direct
                     //  sql implementations later if we wanted to skip the ORM.
-                    connectionString = $"Data Source={config.Repository.Parameters["Filename"]}";
+                    connectionString = $"Data Source={repoConfig.Parameters["Filename"]}";
                     optionsBuilder.UseSqlite(connectionString);
                     context = new CustomerDbContext(optionsBuilder.Options);
                     returnValue = new CustomerEFRepository(logger, context);
                     return returnValue;
-                case "Postgres":
+                case RepoTypes.Postgres:
                     connectionString = new StringBuilder()     // Yeah this is super lame but I liked the options tucked together
-                        .Append($"Host={config.Repository.Parameters["DBHost"]};")
-                        .Append($"Database={config.Repository.Parameters["DBName"]};")
-                        .Append($"Username={config.Repository.Parameters["DBUser"]};")
-                        .Append($"Password={config.Repository.Parameters["DBPass"]}")
+                        .Append($"Host={repoConfig.Parameters["DBHost"]};")
+                        .Append($"Database={repoConfig.Parameters["DBName"]};")
+                        .Append($"Username={repoConfig.Parameters["DBUser"]};")
+                        .Append($"Password={repoConfig.Parameters["DBPass"]}")
                         .ToString();
                     context = new CustomerDbContext(optionsBuilder.Options);
                     returnValue = new CustomerEFRepository(logger, context);

@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace AspirationalPizza.Library.Services.Customers
 {
     public record CustomerModel
     {
         [Key]
+        [BsonId]
         public String? CustomerId { get; set; }        
         public String? FirstName { get; set; } = null;
         public String? LastName { get; set; } = null;
@@ -18,7 +14,6 @@ namespace AspirationalPizza.Library.Services.Customers
         public List<String> PhoneNumbers { get; set; } = new List<String>();
         public List<CustomerAddress> CustomerAddresses { get; set; } = new List<CustomerAddress>();
         public List<String> FavoriteFoodItems { get; set; } = new List<String>();
-
     }
 
     public record CustomerAddress

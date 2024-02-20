@@ -1,26 +1,19 @@
 ﻿using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using AspirationalPizza.Library.RepoSupport;
 using AspirationalPizza.Library.Configuration;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
 
 namespace AspirationalPizza.Library.Services.Customers.Repositories
 {
-    internal class CustomerMongoRepository : ICustomerRepository
+    internal class CustomerMongoRepository : IRepository<CustomerModel>
     {
-        private readonly ILogger<ICustomerRepository> _logger;
+        private readonly ILogger<IRepository<CustomerModel>> _logger;
         private MongoClient _dbClient;
         IMongoDatabase _database;
         IMongoCollection<CustomerModel> _collection;
 
-        public CustomerMongoRepository(ILogger<ICustomerRepository> logger, RepoConfig dbConfig)
+        public CustomerMongoRepository(ILogger<IRepository<CustomerModel>> logger, RepoConfig dbConfig)
         {
             _logger = logger;
             _dbClient = new MongoClient(dbConfig.Parameters["ConnectionString"]);
@@ -29,7 +22,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
 
         }
 
-        async Task<CustomerModel> ICustomerRepository.Create(CustomerModel customer)
+        async Task<CustomerModel> IRepository<CustomerModel>.Create(CustomerModel customer)
         {
             try
             {
@@ -39,7 +32,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
             catch (Exception ex) { throw new InvalidDataException("Unable to update specified customer record ", ex); }
         }
 
-        async Task<Boolean> ICustomerRepository.Delete(CustomerModel customer)
+        async Task<Boolean> IRepository<CustomerModel>.Delete(CustomerModel customer)
         {
             FilterDefinition<CustomerModel> filter = Builders<CustomerModel>.Filter.Eq(c => c.CustomerId, customer.CustomerId);
             DeleteResult status = await _collection.DeleteOneAsync(filter);
@@ -47,21 +40,21 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
             throw new InvalidDataException("Unable to delete specified customer record ");
         }
 
-        async Task<CustomerModel?> ICustomerRepository.Get(string customerId)
+        async Task<CustomerModel?> IRepository<CustomerModel>.Get(string customerId)
         {
             FilterDefinition<CustomerModel> filter = Builders<CustomerModel>.Filter.Eq(c => c.CustomerId, customerId);
             CustomerModel customer = await _collection.Find(filter).FirstOrDefaultAsync();
             return customer;
         }
 
-        async Task<List<CustomerModel>> ICustomerRepository.Search(CustomerSearch searchObject)
+        async Task<List<CustomerModel>> IRepository<CustomerModel>.Search(CustomerSearch searchObject)
         {
             FilterDefinition<CustomerModel> filter = MongoSearch<CustomerModel>.FilterBuilder(searchObject);
             List<CustomerModel> partyList = await _collection.Find(filter).ToListAsync();
             return partyList;
         }
 
-        async Task<CustomerModel> ICustomerRepository.Update(CustomerModel customer)
+        async Task<CustomerModel> IRepository<CustomerModel>.Update(CustomerModel customer)
         {
             FilterDefinition<CustomerModel> filter = Builders<CustomerModel>.Filter.Eq(c => c.CustomerId, customer.CustomerId);
             ReplaceOneResult result = await _collection.ReplaceOneAsync(filter, customer);
@@ -69,7 +62,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
             throw new InvalidDataException("Unable to update specified customer record ");
         }
 
-        async Task<List<CustomerModel>> ICustomerRepository.BulkInsert(List<CustomerModel> customers)
+        async Task<List<CustomerModel>> IRepository<CustomerModel>.BulkInsert(List<CustomerModel> customers)
         {
             try
             {

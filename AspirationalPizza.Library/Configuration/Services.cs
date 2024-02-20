@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using AspirationalPizza.Library.Services.Customers;
 using AspirationalPizza.Library.Framework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using AspirationalPizza.Library.Services.Customers.Repositories;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace AspirationalPizza.Library.Configuration
 {
@@ -29,12 +23,18 @@ namespace AspirationalPizza.Library.Configuration
             ServiceConfig<CustomerService> customerConfig = config.GetSection(ServiceKeys.Customers).Get<ServiceConfig<CustomerService>>() ??
                 throw new ArgumentNullException("Customer Config section is not populated appropriately");    // Get the config section for our factory method
             services.Configure<ServiceConfig<CustomerService>>(config.GetSection(ServiceKeys.Customers));     // Add the config section for our service
-            ICustomerRepository customerRepository = CustomerService.GetRepository(                           // Use the factory to create a repo
-                services.BuildServiceProvider().GetRequiredService<ILogger<ICustomerRepository>>(),
+            IRepository<CustomerModel> customerRepository = CustomerService.GetRepository(                           // Use the factory to create a repo
+                services.BuildServiceProvider().GetRequiredService<ILogger<IRepository<CustomerModel>>>(),
                 customerConfig);
             services.AddSingleton(customerRepository);                                                        // Register our repo on the DI Container
             services.AddScoped<ICustomerService, CustomerService>();                                          // Instantiate our service for the DI Container
 
+
+            /*  Remember that time I tried to make this generic?
+             * IRepository<CustomerModel> customerRepository = (IRepository<CustomerModel>)RepoSupport.RepoFactory
+                .GetRepository<CustomerService, CustomerModel, CustomerDbContext, CustomerEFRepository, CustomerMongoRepository>(
+                    services.BuildServiceProvider().GetRequiredService<ILogger<IRepository<CustomerModel>>>(), customerConfig); 
+            */
         }
     }
 }

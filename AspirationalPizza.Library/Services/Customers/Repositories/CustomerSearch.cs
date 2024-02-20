@@ -20,7 +20,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
             {
                 return new Dictionary<string, string>
                     {
-                        { "Id", "String" },
+                        { "CustomerId", "String" },
                         { "FirstName", "String" },
                         { "LastName", "String" },
                         { "Emails", "String[]" },
@@ -35,7 +35,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
 
         new public record Attributes : SearchBase.Attributes
         { 
-            public const string Id = "Id";
+            public const string CustomerId = "CustomerId";
             public const string FirstName = "FirstName";
             public const string LastName = "FirstName";
             public const string Emails = "Emails";

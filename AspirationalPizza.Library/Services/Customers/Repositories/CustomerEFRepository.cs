@@ -1,28 +1,22 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AspirationalPizza.Library.RepoSupport;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AspirationalPizza.Library.Services.Customers.Repositories
 {
-    internal class CustomerEFRepository : ICustomerRepository
+    internal class CustomerEFRepository : IRepository<CustomerModel>
     {
         private readonly CustomerDbContext _customerContext;
-        private readonly ILogger<ICustomerRepository> _logger;
+        private readonly ILogger<IRepository<CustomerModel>> _logger;
 
-        public CustomerEFRepository(ILogger<ICustomerRepository> logger, CustomerDbContext customerContext)
+        public CustomerEFRepository(ILogger<IRepository<CustomerModel>> logger, CustomerDbContext customerContext)
         {
             _customerContext = customerContext;
             _logger = logger;
         }
 
-        async Task<CustomerModel> ICustomerRepository.Create(CustomerModel customer)
+        async Task<CustomerModel> IRepository<CustomerModel>.Create(CustomerModel customer)
         {
             if (customer.CustomerId != null)
             {
@@ -34,7 +28,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
             throw new ArgumentNullException(nameof(customer));
         }
 
-        async Task<Boolean> ICustomerRepository.Delete(CustomerModel customer)
+        async Task<Boolean> IRepository<CustomerModel>.Delete(CustomerModel customer)
         {
             _customerContext.Remove(customer);
             int updatedRows = await _customerContext.SaveChangesAsync();
@@ -42,7 +36,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
             throw new InvalidDataException("Unable to delete specified customer record ");
         }
 
-        async Task<CustomerModel?> ICustomerRepository.Get(string customerId)
+        async Task<CustomerModel?> IRepository<CustomerModel>.Get(string customerId)
         {
             CustomerModel? got = await _customerContext.Customers.Where(c => c.CustomerId == customerId)
                 .Include(p => p.CustomerAddresses)
@@ -50,7 +44,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
             return got;
         }
 
-        async Task<List<CustomerModel>> ICustomerRepository.Search(CustomerSearch searchObject)
+        async Task<List<CustomerModel>> IRepository<CustomerModel>.Search(CustomerSearch searchObject)
         {
             //Not sure why the ToListAsync method doesn't show up here yet, but I'll live with the warning for now.
             return _customerContext.Customers.Where(LinqSearch<CustomerModel>.FilterBuilder(searchObject)).ToList();
@@ -59,7 +53,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
             // LINK: https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/generate-consume-asynchronous-stream
         }
 
-        async Task<CustomerModel> ICustomerRepository.Update(CustomerModel customer)
+        async Task<CustomerModel> IRepository<CustomerModel>.Update(CustomerModel customer)
         {
             if (customer.CustomerId != null)
             {
@@ -70,7 +64,7 @@ namespace AspirationalPizza.Library.Services.Customers.Repositories
             throw new ArgumentNullException(nameof(customer));
         }
 
-        async Task<List<CustomerModel>> ICustomerRepository.BulkInsert(List<CustomerModel> customers)
+        async Task<List<CustomerModel>> IRepository<CustomerModel>.BulkInsert(List<CustomerModel> customers)
         {
             List<EntityEntry<CustomerModel>> confirmed = new List<EntityEntry<CustomerModel>>();
             List<CustomerModel> returnList = new List<CustomerModel>();

@@ -1,15 +1,8 @@
-﻿using AspirationalPizza.Library.Services.Customers.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AspirationalPizza.Library.Configuration
+﻿namespace AspirationalPizza.Library.Configuration
 {
     public class ServiceConfig<T> where T : class
     {
-        public RepoConfig? Repository { get; set; }
+        public Dictionary<String, RepoConfig> Repositories { get; set; } = new Dictionary<String, RepoConfig>();
 
     }
 
